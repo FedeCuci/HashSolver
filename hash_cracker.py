@@ -1,7 +1,9 @@
 import random
 import hashlib
 import os
+import time
 
+#Welcome message to display when file is run
 welcome = '''
  _   _           _       _____                _             
 | | | |         | |     /  __ \              | |            
@@ -15,11 +17,11 @@ welcome = '''
 For a list of commands, type: "help"
                                                             '''
 
-
 os.system('clear')
 print(welcome)
 current_algorithm = ''
 current_dictionary = '/usr/share/dict/words'
+verbose = False
 
 help_info = '''
 	To start the program, type: start
@@ -32,15 +34,21 @@ help_info = '''
 
 supported_algorithms = 'MD5, SHA256, SHA512'
 
+# Crack the hash
 def crack(chosen_algorithm, hashtc, salt):
 	
+	# Loop over dictionary file
+	start = time.time()
 	for i in words:
 		j = bytes(i + salt, 'utf-8')
 		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
 		if hashed == hashtc:
-			print('Hash found, the word is: ', i)
+			end = time.time()
+			print('Hash found, the password is: ', i)
+			print('Time took to complete: ', (end-start))
 			break
 
+# Main
 while True:
 	
 	try:
@@ -52,14 +60,17 @@ while True:
 	if beginning == 'help':
 		print(help_info)
 	elif beginning == 'start':
+		# Hash to crack
 		hash_to_crack = input('Hash to crack: ').lower()
 		salt = input('Salt: ')
 
+		# Open dictionary file if it exists
 		try:
 			words = open(current_dictionary).read().splitlines()
 		except FileNotFoundError:
 			print('Invalid file or directory\n')
 
+		# Run crack() based on algorithm
 		if current_algorithm == 'md5':
 			crack('md5', hash_to_crack, salt)
 			#print('Hash was not found')
@@ -84,7 +95,10 @@ while True:
 	elif beginning == 'change':
 		print('''
 1. Algorithm
-2. Dicionary\n''')
+2. Dicionary
+3. Verbose\n''')
+
+		# Change settings category 
 		while True:
 			try:
 				choice = input('change > ')
@@ -98,6 +112,8 @@ while True:
 			elif choice == '2':
 				current_dictionary = input('change/dictionary > ')
 				break
+			elif choice == '3':
+				verbose = True
 			else:
 				print('Not an option')
 	elif beginning == 'status':
@@ -112,6 +128,3 @@ each hash, it checks whether it matches the hash to be cracked.\n''')
 	else:
 		print('Unknown command')
 		
-
-
-
