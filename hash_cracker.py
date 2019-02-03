@@ -42,10 +42,12 @@ def crack(chosen_algorithm, hashtc, salt):
 	for i in words:
 		j = bytes(i + salt, 'utf-8')
 		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+		if verbose is True:
+			print(hashed)
 		if hashed == hashtc:
 			end = time.time()
-			print('Hash found, the password is: ', i)
-			print('Time took to complete: ', (end-start))
+			print('\nHash found, the password is: ', i)
+			print('\nTime took to complete: ', (end-start))
 			break
 
 # Main
@@ -108,12 +110,16 @@ while True:
 
 			if choice == '1':
 				current_algorithm = input('change/algorithm > ').lower()
-				break
 			elif choice == '2':
 				current_dictionary = input('change/dictionary > ')
-				break
 			elif choice == '3':
-				verbose = True
+				if verbose == True:
+					verbose = False
+				else:
+					verbose = True
+				print('Verbose: ', str(verbose))
+			elif choice == 'c':
+				break
 			else:
 				print('Not an option')
 	elif beginning == 'status':
@@ -127,4 +133,3 @@ every single word using the hash algorithm provided. After
 each hash, it checks whether it matches the hash to be cracked.\n''')
 	else:
 		print('Unknown command')
-		
