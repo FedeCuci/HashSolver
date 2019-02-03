@@ -26,9 +26,9 @@ verbose = False
 help_info = '''
 	To start the program, type: start
 	To get a list of the supported hash algorithms, type: algorithms
-	To exit the program, type: c
 	To change your settings, type: change
 	To get the current status of your settings, type: status
+	To exit the program, type: c
 	'''
 
 supported_algorithms = 'MD5, SHA256, SHA512'
@@ -66,7 +66,6 @@ def crack(chosen_algorithm, hashtc, salt):
 				print('\nWords tried: ', n)
 				break
 
-
 # Main
 while True:
 	
@@ -87,7 +86,7 @@ while True:
 		try:
 			words = open(current_dictionary).read().splitlines()
 		except FileNotFoundError:
-			print('Invalid file or directory\n')
+			print('Invalid dictionary directory\n')
 
 		# Run crack() based on algorithm
 		if current_algorithm == 'md5':
@@ -111,9 +110,13 @@ while True:
 		exit()
 	elif beginning == 'change':
 		print('''
+Type: "help" + "command name" for a list of available options.
+
 1. Algorithm
 2. Dicionary
-3. Verbose\n''')
+3. Verbose
+4. Input file
+5. Output file\n''')
 
 		# Change settings category 
 		while True:
@@ -133,10 +136,41 @@ while True:
 				else:
 					verbose = True
 				print('Verbose: ', str(verbose))
+			elif choice == '4':
+				input_file_choice = input('Would you like to use an input file? (y/n) ')
+				if input_file_choice == 'y' or input_file_choice == 'Y':
+					current_input_file = input('Enter input-file name: ')
+				else:
+					print('')
+			elif choice == '5':
+				output_file_choice = input('Would you like to use an output file? (y/n) ')
+				if output_file_choice == 'n' or output_file_choice == 'N':
+					current_output_file = input('Enter output-file name: ')
+				else:
+					print('')
 			elif choice == 'c':
 				break
 			elif choice == 'help':
-				print('To go back to main program, type: c')
+				print('Type: "help command_name" for help')
+			elif choice == 'help input file' or choice == 'help Input file' or choice == 'help 4':
+				print('''
+Input file: a file containing several hashes to be cracked.
+Make sure there is one hash per line.\n''')
+			elif choice == 'help output file' or choice == 'Outpute file' or choice == 'help 5':
+				print('''
+Output file: the file that will be created with the final results
+of the program.\n''')
+			elif choice == 'help dictionary' or choice == 'help Dicionary' or choice == 'help 2':
+				print('''
+Dictionary: directory of the dictionary file that you would like
+to use to compute the hash/hashes provided.\n''')
+			elif choice == 'help verbose' or choice == 'help Verbose' or choice == 'help 3':
+				print('''
+Verbose: Show all the hashes being calculated live.''')
+			elif choice == 'help algorithm' or choice == 'help Algorithm' or choice == 'help 1':
+				print('''
+Algorithm: which hashing algorithm should the program use to crack the hash.
+This needs to be the same algorithm as the hash you are trying to crack''')
 			else:
 				print('Not an option')
 	elif beginning == 'status':
