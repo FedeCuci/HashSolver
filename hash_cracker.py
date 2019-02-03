@@ -25,11 +25,10 @@ verbose = False
 
 help_info = '''
 	To start the program, type: start
-	To get a list of the supported protocols, type: protocols
-	To get the current dictionary list being used, type: dictionary
+	To get a list of the supported hash algorithms, type: algorithms
 	To exit the program, type: c
 	To change your settings, type: change
-	To get the current status of your setting, type: status
+	To get the current status of your settings, type: status
 	'''
 
 supported_algorithms = 'MD5, SHA256, SHA512'
@@ -38,17 +37,35 @@ supported_algorithms = 'MD5, SHA256, SHA512'
 def crack(chosen_algorithm, hashtc, salt):
 	
 	# Loop over dictionary file
-	start = time.time()
-	for i in words:
-		j = bytes(i + salt, 'utf-8')
-		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
-		if verbose is True:
+
+	n = 0
+	
+	if verbose == True:
+		start = time.time()
+		for i in words:
+			n += 1
+			j = bytes(i + salt, 'utf-8')
+			hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
 			print(hashed)
-		if hashed == hashtc:
-			end = time.time()
-			print('\nHash found, the password is: ', i)
-			print('\nTime took to complete: ', (end-start))
-			break
+			if hashed == hashtc:
+				end = time.time()
+				print('\nHash found, the password is: ', i)
+				print('\nTime took to complete: ', (end-start))
+				print('Words tried: ', n)
+				break
+	else:
+		start = time.time()
+		for i in words:
+			n += 1
+			j = bytes(i + salt, 'utf-8')
+			hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+			if hashed == hashtc:
+				end = time.time()
+				print('\nHash found, the password is: ', i)
+				print('\nTime took to complete: ', (end-start))
+				print('\nWords tried: ', n)
+				break
+
 
 # Main
 while True:
@@ -88,8 +105,6 @@ while True:
 
 	elif beginning == 'algorithms':
 		print(supported_algorithms)
-	elif beginning == 'dictionary':
-		print(curent_dictionary)
 	elif beginning == 'clear':
 		os.system('clear')
 	elif beginning == 'c':
@@ -120,11 +135,14 @@ while True:
 				print('Verbose: ', str(verbose))
 			elif choice == 'c':
 				break
+			elif choice == 'help':
+				print('To go back to main program, type: c')
 			else:
 				print('Not an option')
 	elif beginning == 'status':
 		print('Dicionary file: ', current_dictionary)
 		print('Algorithm: ', current_algorithm, '\n')
+		print('Verbose is currently: ', str(verbose))
 	elif beginning == 'info':
 		print('''
 Hash cracker takes a hash and appends the provided salt to it.
