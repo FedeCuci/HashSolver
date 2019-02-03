@@ -21,13 +21,25 @@ os.system('clear')
 print(welcome)
 current_algorithm = ''
 current_dictionary = '/usr/share/dict/words'
+current_input_file = ''
+current_output_file = ''
 verbose = False
 output_file = False
 input_file = False
 
 
+def status():
+	print('\nDicionary file: ', current_dictionary)
+	print('Algorithm: ', current_algorithm)
+	if verbose is True:
+		print('Verbose: on')
+	else:
+		print('Verbose: off')
+	print('Output file: ', current_output_file)
+	print('Input file: ', current_input_file, '\n')
+
 help_info = '''
-	To start the program, type: start
+	To crack a hash, type: crack
 	To get a list of the supported hash algorithms, type: algorithms
 	To change your settings, type: settings
 	To get the current status of your settings, type: status
@@ -52,49 +64,127 @@ def make_output_file(word):
 		f.write('Word is: {}'.format(word))
 		f.close()
 
+def verbose_and_input_file(chosen_algorithm):
+
+	m = 0
+	n = 0
+
+	try:
+		input_hashes = open(current_input_file).read().splitlines()
+	except FileNotFoundError:
+		print('File does not exist\n')
+	else:	
+		for i in input_hashes:
+			start = time.time()
+			print('Hashes to calculate: {}'.format(len(input_hashes) - m))
+			m += 1
+			salt = input('Salt: ')
+			l = i.lower()
+			for k in words:
+				n += 1
+				j = bytes(k + salt, 'utf-8')
+				hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+				print(hashed)
+				if hashed == l:
+					end = time.time()
+					print('\nHash found, the password is: ', k)
+					print('\nTime took to complete: ', (end-start))
+					print('Words tried: ', n)
+					if output_file is True:
+						make_output_file(k)
+						break
+					else:
+						break
+
+def verbose_only(chosen_algorithm):
+
+	hash_to_crack = input('Hash to crack: ').lower()
+	salt = input('Salt: ')
+
+	start = time.time()
+	for i in words:
+		n += 1
+		j = bytes(i + salt, 'utf-8')
+		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+		# Verbose could be checked here and improve readability but would likely slow down the program
+		print(hashed)
+		if hashed == hash_to_crack:
+			end = time.time()
+			print('\nHash found, the password is: ', i)
+			print('\nTime took to complete: ', (end-start))
+			print('Words tried: ', n)
+			if output_file is True:
+				make_output_file(i)
+				break
+			else:
+				break
+
+def input_file_only(chosen_algorithm):
+
+	m = 0
+	n = 0
+	try:
+		input_hashes = open(current_input_file).read().splitlines()
+	except FileNotFoundError:
+		print('File does not exist\n')
+	else:
+		for i in input_hashes:
+			start = time.time()
+			print('Hashes to calculate: {}'.format(len(input_hashes) - m))
+			m += 1
+			salt = input('Salt: ')
+			l = i.lower()
+			for k in words:
+				n += 1
+				j = bytes(k + salt, 'utf-8')
+				hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+				if hashed == l:
+					end = time.time()
+					print('\nHash found, the password is: ', k)
+					print('\nTime took to complete: ', (end-start))
+					print('Words tried: ', n)
+					if output_file is True:
+						make_output_file(k)
+						break
+					else:
+						break
+
+def simple_crack(chosen_algorithm):
+
+	n = 0
+
+	hash_to_crack = input('Hash to crack: ').lower()
+	salt = input('Salt: ')
+
+	start = time.time()
+	for i in words:
+		n += 1
+		j = bytes(i + salt, 'utf-8')
+		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+		if hashed == hash_to_crack:
+			end = time.time()
+			print('\nHash found, the password is: ', i)
+			print('\nTime took to complete: ', (end-start))
+			print('\nWords tried: ', n)
+			if output_file is True:
+				make_output_file(i)
+				break
+			else:
+				break
 
 # Crack the hash
-def crack(chosen_algorithm, hashtc, salt):
+def crack(chosen_algorithm):
 	
 	# Loop over dictionary file
 
-	print(output_file, '***********************************')
-
-	n = 0
-	
-	if verbose == True:
-		start = time.time()
-		for i in words:
-			n += 1
-			j = bytes(i + salt, 'utf-8')
-			hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
-			print(hashed)
-			if hashed == hashtc:
-				end = time.time()
-				print('\nHash found, the password is: ', i)
-				print('\nTime took to complete: ', (end-start))
-				print('Words tried: ', n)
-				if output_file is True:
-					make_output_file(i)
-					break
-				else:
-					break
+	if verbose is True and input_file is True:
+		verbose_and_input_file(chosen_algorithm)
+	elif verbose is True and input_file is not True:
+		verbose_only(chosen_algorithm)
+	elif verbose is not True and input_file is True:
+		input_file_only(chosen_algorithm)
 	else:
-		start = time.time()
-		for i in words:
-			n += 1
-			j = bytes(i + salt, 'utf-8')
-			hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
-			if hashed == hashtc:
-				end = time.time()
-				print('\nHash found, the password is: ', i)
-				print('\nTime took to complete: ', (end-start))
-				print('\nWords tried: ', n)
-				if output_file is True:
-					make_output_file(i)
-					break
-				else:
-					break
+		simple_crack(chosen_algorithm)
 					
 # Main
 while True:
@@ -138,8 +228,13 @@ Type: "help" + "command name" for a list of available options.
 			elif choice == '4':
 				input_file_choice = input('Would you like to use an input file? (y/n) ')
 				if input_file_choice == 'y' or input_file_choice == 'Y':
-					input_file = True
-					current_input_file = input('settings/Input-file name > ')
+					while True:
+						current_input_file = input('settings/Input-file name > ')
+						if current_input_file[-4:] != '.txt':
+							print('You must enter a ".txt" file.')
+						else:
+							input_file = True
+							break
 				else:
 					print('')
 			elif choice == '5':
@@ -149,7 +244,18 @@ Type: "help" + "command name" for a list of available options.
 					current_output_file = input('settings/Output-file name > ')
 				else:
 					print('')
-			elif choice == 'c':
+			elif choice == 'list':
+				print('''
+Type: "help" + "command name" for a list of available options.
+
+1. Algorithm
+2. Dicionary
+3. Verbose
+4. Input file
+5. Output file\n''')
+			elif choice == 'status':
+				status()
+			elif choice == 'c' or choice == 'x':
 				break
 			elif choice == 'help':
 				print('Type: "help command_name" for help')
@@ -174,10 +280,8 @@ Algorithm: which hashing algorithm should the program use to crack the hash.
 This needs to be the same algorithm as the hash you are trying to crack''')
 			else:
 				print('Not an option')
-	elif beginning == 'start':
+	elif beginning == 'crack':
 		# Hash to crack
-		hash_to_crack = input('Hash to crack: ').lower()
-		salt = input('Salt: ')
 
 		# Open dictionary file if it exists
 		try:
@@ -187,13 +291,13 @@ This needs to be the same algorithm as the hash you are trying to crack''')
 
 		# Run crack() based on algorithm
 		if current_algorithm == 'md5':
-			crack('md5', hash_to_crack, salt)
+			crack('md5')
 			#print('Hash was not found')
 		elif current_algorithm == 'sha256':
-			crack('sha256', hash_to_crack, salt)
+			crack('sha256')
 			#print('Hash was not found...')
 		elif current_algorithm == 'sha512':
-			crack('sha512', hash_to_crack, salt)
+			crack('sha512')
 			
 			#print('Hash was not found...')
 		else:
@@ -207,9 +311,8 @@ This needs to be the same algorithm as the hash you are trying to crack''')
 	elif beginning == 'c':
 		exit()
 	elif beginning == 'status':
-		print('Dicionary file: ', current_dictionary)
-		print('Algorithm: ', current_algorithm, '\n')
-		print('Verbose is currently: ', str(verbose))
+		status()
+		
 	elif beginning == 'info':
 		print('''
 Hash cracker takes a hash and appends the provided salt to it.
