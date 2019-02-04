@@ -1,1 +1,3 @@
 # Hash-Solver
+
+Hash solver is a little python program that uses a dictionary file to compute a hash provided by the user. It loops over the dictionary file, and hashes every single word that is in it, until it finds the one that matches with the one that the user provided. It has several additional functionalities such as adding salts, calculating multiple hashes by providing an input file, verbose...
