@@ -1,1 +1,1 @@
-# Hash-Cracker
+# Hash-Solver
