@@ -17,6 +17,7 @@ welcome = '''
 For a list of commands, type: "help"
                                                             '''
 
+# Global variables
 os.system('clear')
 print(welcome)
 current_algorithm = ''
@@ -27,7 +28,7 @@ verbose = False
 output_file = False
 input_file = False
 
-
+# Print out the current status of settings
 def status():
 	print('\nDicionary file: ', current_dictionary)
 	print('Algorithm: ', current_algorithm)
@@ -39,15 +40,16 @@ def status():
 	print('Input file: ', current_input_file, '\n')
 
 help_info = '''
-	To crack a hash, type: crack
-	To get a list of the supported hash algorithms, type: algorithms
-	To change your settings, type: settings
-	To get the current status of your settings, type: status
-	To exit the program, type: c
+ To crack a hash, type: crack
+ To get a list of the supported hash algorithms, type: algorithms
+ To change your settings, type: settings
+ To get the current status of your settings, type: status
+ To exit the program, type: c
 	'''
 
 supported_algorithms = 'MD5, SHA256, SHA512'
 
+# Function to make output file if requested
 def make_output_file(word):
 	try:
 		f = open(current_output_file + '.txt', "x")
@@ -64,6 +66,7 @@ def make_output_file(word):
 		f.write('Word is: {}'.format(word))
 		f.close()
 
+# Print out 
 def verbose_and_input_file(chosen_algorithm):
 
 	m = 0
@@ -107,7 +110,7 @@ def verbose_only(chosen_algorithm):
 		j = bytes(i + salt, 'utf-8')
 		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
 		# Verbose could be checked here and improve readability but would likely slow down the program
-		print(hashed)
+		print(hashed) # This is the only extra line for verbose... How can it be improved?
 		if hashed == hash_to_crack:
 			end = time.time()
 			print('\nHash found, the password is: ', i)
@@ -123,6 +126,7 @@ def input_file_only(chosen_algorithm):
 
 	m = 0
 	n = 0
+	# Print if input file exists
 	try:
 		input_hashes = open(current_input_file).read().splitlines()
 	except FileNotFoundError:
@@ -142,13 +146,14 @@ def input_file_only(chosen_algorithm):
 					end = time.time()
 					print('\nHash found, the password is: ', k)
 					print('\nTime took to complete: ', (end-start))
-					print('Words tried: ', n)
+					print('Words tried: ', n, '\n')
 					if output_file is True:
 						make_output_file(k)
 						break
 					else:
 						break
 
+# Crack hash without input file or verbose
 def simple_crack(chosen_algorithm):
 
 	n = 0
@@ -157,22 +162,29 @@ def simple_crack(chosen_algorithm):
 	salt = input('Salt: ')
 
 	start = time.time()
+	# Loop over dictionary file
 	for i in words:
 		n += 1
+		# encode the current word and add the salt to it
 		j = bytes(i + salt, 'utf-8')
+		# Hash the encoded word depending on which algorithm was chosen
+		# hashlib.md5(j).hexdigest()
 		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+		# If the hashed word is equal to the inputted hash:
 		if hashed == hash_to_crack:
 			end = time.time()
+			# Show the word of the hash as well as some extra information
 			print('\nHash found, the password is: ', i)
 			print('\nTime took to complete: ', (end-start))
 			print('\nWords tried: ', n)
+			# Check if the user wants an output file
 			if output_file is True:
 				make_output_file(i)
 				break
 			else:
 				break
 
-# Crack the hash
+# Checks the settings of the user
 def crack(chosen_algorithm):
 	
 	# Loop over dictionary file
@@ -186,7 +198,7 @@ def crack(chosen_algorithm):
 	else:
 		simple_crack(chosen_algorithm)
 					
-# Main
+# Main program
 while True:
 	
 	try:
@@ -202,7 +214,7 @@ while True:
 Type: "help" + "command name" for a list of available options.
 
 1. Algorithm
-2. Dicionary
+2. Dictionary
 3. Verbose
 4. Input file
 5. Output file\n''')
@@ -297,11 +309,10 @@ This needs to be the same algorithm as the hash you are trying to crack''')
 			crack('sha256')
 			#print('Hash was not found...')
 		elif current_algorithm == 'sha512':
-			crack('sha512')
-			
+			crack('sha512')		
 			#print('Hash was not found...')
 		else:
-			print('Hash algorithm not supported, type: "algorithms", to check the supported hash functions')
+			print('You must choose a hashing algorithm in: settings/algorithm')
 
 	elif beginning == 'algorithms':
 		print(supported_algorithms)
