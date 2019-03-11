@@ -7,7 +7,7 @@ import crack_func
 
 def getInput(text):
 	try:
-		choice = input('{} > '.format(text))
+		choice = input('{}> '.format(text))
 	except KeyboardInterrupt:
 		print('')
 		exit()
@@ -21,7 +21,6 @@ actions = {
 	'1' : algorithm_option,
 	'2': algorithm_option,
 	'3' : algorithm_option
-	
 }
 
 # cmd = input('Enter Command: ')
@@ -56,21 +55,16 @@ supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512']
 
 # Print out the current status of settings
 def status():
-	print('\nDicionary file: ', current_dictionary)
+	print('\nDictionary file: ', current_dictionary)
 	print('Algorithm: ', current_algorithm)
-	if verbose is True:
-		print('Verbose: on')
-	else:
-		print('Verbose: off')
+	print('Verbose: ', str(verbose))
 	print('Output file: ', current_output_file)
 	print('Input file: ', current_input_file, '\n')
 
 help_info = '''
- To crack a hash, type: crack
- To get a list of the supported hash algorithms, type: algorithms
- To change your settings, type: settings
- To get the current status of your settings, type: status
- To exit the program, type: c
+ Crack: crack your hash/es with current settings
+ Settings: change your settings
+ Status: Get an overview of your current settings
 	'''
 	
 def main(verbose, salt='', words='', hash_to_crack='', chosen_algorithm='', output_file=False):
