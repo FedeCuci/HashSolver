@@ -4,23 +4,30 @@ import time
 import hashlib
 
 # Function to make output file if requested
-def make_output_file(word):
+def make_output_file(word, output_file, salt, hashed):
 	try:
-		f = open(current_output_file + '.txt', 'x')
+		if output_file[-4:] == '.txt':
+			f = open(output_file, 'x')
+		else:
+			f = open(output_file + '.txt', 'x')
 	except FileExistsError:
 		exists = input('File already exists, replace it? (y/n) ')
 		if exists == 'y' or exists == 'Y':
-			f = open(current_output_file + '.txt', 'w+')
-			f.write('Word is: {}'.format(word))
+			if output_file[-4:] == '.txt':
+				f = open(output_file, 'w+')
+			else:
+				f = open(output_file + '.txt', 'w+')
+			f.write('The Word for the hash {} with salt {} is: {}'.format(word, salt, hashed))
 			f.close()
 			print('\nEverything was written to file succesfully!')
 		elif exists == 'n' or exists == 'N':
 			print('Please change the output file name in settings')	
 	else:
-		f.write('Word is: {}'.format(word))
+		print('\nEverything was written to {} succesfully\n'.format(output_file))
+		f.write('The Word for the hash {} with salt {} is: {}'.format(word, salt, hashed))
 		f.close()
 
-def general(verbose, salt, words, hash_to_crack, chosen_algorithm, output_file):
+def general(verbose, dictionary, salt, words, hash_to_crack, chosen_algorithm, output_file):
 
 	if chosen_algorithm not in main.supported_algorithms:
 		print('You must choose a supported algorithm: sha512, sha256, md5')
@@ -45,7 +52,11 @@ def general(verbose, salt, words, hash_to_crack, chosen_algorithm, output_file):
 			print('\nTime took to complete: ', (end-start))
 			print('Words tried: ', n)
 			if output_file:
-				make_output_file(i)
+				make_output_file(i, output_file, salt, hash_to_crack)
+				return True
 				break
 			else:
+				return True
 				break
+	
+	print('Hash was not found in table. Try another table?')

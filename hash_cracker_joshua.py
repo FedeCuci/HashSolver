@@ -49,8 +49,9 @@ current_salt = ''
 current_dictionary = '/usr/share/dict/words'
 current_output_file = ''
 hash_to_crack = ''
+output_file = ''
 verbose = False
-output_file = False
+input_file = ''
 supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512']
 
 # Print out the current status of settings
@@ -67,7 +68,7 @@ help_info = '''
  Status: Get an overview of your current settings
 	'''
 	
-def main(verbose, salt='', words='', hash_to_crack='', chosen_algorithm='', output_file=False):
+def main(verbose=False, dictionary='/usr/share/dict/words', salt='', input_file='', hash_to_crack='', chosen_algorithm='', output_file=False):
 
 	words = open(current_dictionary).read().splitlines()
 
@@ -83,23 +84,22 @@ def main(verbose, salt='', words='', hash_to_crack='', chosen_algorithm='', outp
 	2. Dictionary
 	3. Verbose
 	4. Input file
-	5. Output file\n''')
+	5. Output file
+	6. Salt\n''')
 
-			settings.settings()
+			settings.settings(verbose, dictionary, salt, words, hash_to_crack, chosen_algorithm, output_file)
 
 			# Change settings category 
 			
 		elif beginning == 'crack':
 
-			crack_func.general(verbose, salt, words, hash_to_crack, chosen_algorithm, output_file)
+			crack_func.general(verbose, dictionary, salt, words, hash_to_crack, chosen_algorithm, output_file)
 
 			# # Run crack() based on algorithm
 			# if chosen_algorithm in supported_algorithms:
 			# 	crack(chosen_algorithm, verbose, input_file, output_file)
 			# else:
 			# 	print('You must choose a hashing algorithm in: settings/algorithm')
-
-			
 
 		elif beginning == 'algorithms':
 			print(supported_algorithms)
@@ -121,4 +121,4 @@ def main(verbose, salt='', words='', hash_to_crack='', chosen_algorithm='', outp
 			print('Unknown command')
 
 if __name__ =='__main__':
-	main(verbose, current_salt, current_dictionary, hash_to_crack, current_algorithm, output_file)
+	main(verbose, current_dictionary, current_salt, input_file, hash_to_crack, current_algorithm, output_file)

@@ -1,17 +1,10 @@
 import hash_cracker_joshua as main
 import os
 
-def settings():
+def settings(verbose=False, dictionary='/usr/share/dict/words', salt='', input_file='', hash_to_crack='', chosen_algorithm='', output_file=False):
 
 	print('Type \'help\' for a list of commands')
 
-	current_algorithm = ''
-	current_salt = ''
-	current_dictionary = '/usr/share/dict/words'
-	current_output_file = ''
-	hash_to_crack = ''
-	verbose = False
-	output_file = False
 	supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512']
 	current_directory = os.getcwd()
 	help_text = '''
@@ -30,9 +23,9 @@ Possible options:
 		val = main.getInput('settings')
 
 		if val == '1' or val == 'algorithm':
-			current_algorithm = main.getInput('settings/algorithm').lower()
+			chosen_algorithm = main.getInput('settings/algorithm').lower()
 		elif val == '2' or val == 'dictionary':
-			current_dictionary = main.getInput('settings/dictionary')
+			dictionary = main.getInput('settings/dictionary') # To work on
 		elif val == '3' or val == 'verbose':
 			if verbose == True:
 				verbose = False
@@ -41,22 +34,24 @@ Possible options:
 			print('Verbose: ', str(verbose))
 
 		elif val == '4' or val == 'input file':
-			input_dictionary = main.getInput('Would you like to use an input file? (y/n)')
-			if input_dictionary == 'y' or input_dictionary == 'Y':
+			input_file = main.getInput('Would you like to use an input file? (y/n)')
+			if input_file == 'y' or input_file == 'Y':
 				while True:
-					current_dictionary = main.getInput('settings/Input-file name')
+					current_file = main.getInput('settings/Input-file name')
 					# Open dictionary file if it exists
 					try:
-						print(current_directory + '/' + current_dictionary)
-						words = open(current_dictionary).read().splitlines()
+						# Print current directory to user
+						print(current_directory + '/' + current_file)
+						# Read file for the hashes
+						words = open(current_file).read().splitlines()
 					except FileNotFoundError:
 						print('Invalid dictionary directory\n')
 						break
 
-					if current_dictionary[-4:] != '.txt':
+					if current_file[-4:] != '.txt':
 						print('You must enter a ".txt" file.')
 					else:
-						words = open(current_dictionary).read().splitlines()
+						words = open(current_file).read().splitlines()
 						break
 					
 			else:
@@ -64,16 +59,15 @@ Possible options:
 		elif val == '5' or val == 'output file':
 			output_file_choice = main.getInput('Would you like to use an output file? (y/n)')
 			if output_file_choice == 'y' or output_file_choice == 'Y':
-				output_file = True
-				current_output_file = main.getInput('settings/Output-file name')
+				output_file = main.getInput('settings/Output-file name (txt)')
 			else:
 				print('')
 		elif val == '6' or val == 'salt':
-			current_salt = main.getInput('salt').lower()
+			salt = main.getInput('salt').lower()
 		elif val == 'status':
 			status()
 		elif val == 'c' or val == 'x':
-			main.main(verbose, current_salt, current_dictionary, hash_to_crack, current_algorithm, output_file)
+			main.main(verbose, dictionary, salt, input_file, hash_to_crack, chosen_algorithm, output_file)
 		elif val == 'help':
 			print('Type: "help command_name" for help')
 		elif val == 'help input file' or val == 'help 4':
