@@ -1,7 +1,7 @@
 import hash_cracker_joshua as main
 import os
 
-def settings(verbose=False, dictionary='/usr/share/dict/words', salt='', input_file='', hash_to_crack='', chosen_algorithm='', output_file=False):
+def settings(verbose=False, input_file='', salt='', dictionary='/usr/share/dict/words', hash_to_crack='', chosen_algorithm='', output_file=False):
 
 	print('Type \'help\' for a list of commands')
 
@@ -24,7 +24,7 @@ Possible options:
 
 		if val == '1' or val == 'algorithm':
 			chosen_algorithm = main.getInput('settings/algorithm').lower()
-		elif val == '2' or val == 'dictionary':
+		elif val == '2' or val == 'input file':
 			dictionary = main.getInput('settings/dictionary') # To work on
 		elif val == '3' or val == 'verbose':
 			if verbose == True:
@@ -33,17 +33,17 @@ Possible options:
 				verbose = True
 			print('Verbose: ', str(verbose))
 
-		elif val == '4' or val == 'input file':
-			input_file = main.getInput('Would you like to use an input file? (y/n)')
-			if input_file == 'y' or input_file == 'Y':
+		elif val == '4' or val == 'dictionary':
+			dictionary = main.getInput('Would you like to use an input file? (y/n)')
+			if dictionary == 'y' or dictionary == 'Y':
 				while True:
-					current_file = main.getInput('settings/Input-file name')
+					current_dictionary = main.getInput('settings/Input-file name')
 					# Open dictionary file if it exists
 					try:
 						# Print current directory to user
-						print(current_directory + '/' + current_file)
+						print(current_directory + '/' + current_dictionary)
 						# Read file for the hashes
-						words = open(current_file).read().splitlines()
+						dictionary = open(current_dictionary).read().splitlines()
 					except FileNotFoundError:
 						print('Invalid dictionary directory\n')
 						break
@@ -67,7 +67,7 @@ Possible options:
 		elif val == 'status':
 			status()
 		elif val == 'c' or val == 'x':
-			main.main(verbose, dictionary, salt, input_file, hash_to_crack, chosen_algorithm, output_file)
+			main.main(verbose, input_file, salt, dictionary, hash_to_crack, chosen_algorithm, output_file)
 		elif val == 'help':
 			print('Type: "help command_name" for help')
 		elif val == 'help input file' or val == 'help 4':

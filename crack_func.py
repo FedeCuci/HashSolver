@@ -17,17 +17,17 @@ def make_output_file(word, output_file, salt, hashed):
 				f = open(output_file, 'w+')
 			else:
 				f = open(output_file + '.txt', 'w+')
-			f.write('The Word for the hash {} with salt {} is: {}'.format(word, salt, hashed))
+			f.write('The Word for the hash {} with salt {} is: {}'.format(hashed, salt, word))
 			f.close()
 			print('\nEverything was written to file succesfully!')
 		elif exists == 'n' or exists == 'N':
 			print('Please change the output file name in settings')	
 	else:
 		print('\nEverything was written to {} succesfully\n'.format(output_file))
-		f.write('The Word for the hash {} with salt {} is: {}'.format(word, salt, hashed))
+		f.write('The Word for the hash {} with salt {} is: {}'.format(hashed, salt, word))
 		f.close()
 
-def general(verbose, dictionary, salt, words, hash_to_crack, chosen_algorithm, output_file):
+def general(verbose, input_file, salt, dictionary, hash_to_crack, chosen_algorithm, output_file):
 
 	if chosen_algorithm not in main.supported_algorithms:
 		print('You must choose a supported algorithm: sha512, sha256, md5')
@@ -39,7 +39,7 @@ def general(verbose, dictionary, salt, words, hash_to_crack, chosen_algorithm, o
 
 	start = time.time()
 
-	for i in words:
+	for i in dictionary:
 		n += 1
 		j = bytes(i + salt, 'utf-8')
 		hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
