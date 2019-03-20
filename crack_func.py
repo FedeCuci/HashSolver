@@ -1,4 +1,4 @@
-import hash_cracker_joshua as main
+import main
 import settings
 import time
 import hashlib
