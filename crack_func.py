@@ -4,7 +4,10 @@ import time
 import hashlib
 
 # Function to make output file if requested
-def make_output_file(word, output_file, salt, hashed):
+def make_output_file(results, salts, output_file='cracked_hashes.txt'):
+
+	n = 0
+
 	try:
 		if output_file[-4:] == '.txt':
 			f = open(output_file, 'x')
@@ -17,15 +20,58 @@ def make_output_file(word, output_file, salt, hashed):
 				f = open(output_file, 'w+')
 			else:
 				f = open(output_file + '.txt', 'w+')
-			f.write('The Word for the hash {} with salt {} is: {}'.format(hashed, salt, word))
-			f.close()
+			for i, j in results.items():
+				f.write('The Word for the hash {} with salt {} is: {}\n'.format(i, salts[n], j))
+				n += 1
 			print('\nEverything was written to file succesfully!')
+			f.close()
 		elif exists == 'n' or exists == 'N':
 			print('Please change the output file name in settings')	
 	else:
+		for i, j in results.items():
+			f.write('The Word for the hash {} with salt {} is: {}\n'.format(i, salts[n], j))
+			n += 1
+
 		print('\nEverything was written to {} succesfully\n'.format(output_file))
-		f.write('The Word for the hash {} with salt {} is: {}'.format(hashed, salt, word))
 		f.close()
+
+def input_file(chosen_algorithm, dictionary, input_file, output_file, verbose):
+
+	m = 0
+	n = 0
+	results = {}
+	salts = []
+
+	start = time.time()
+	
+	for i in input_file:
+		x = i.split(' ')
+		to_hash = x[0]
+		salt = x[1]
+		print('Hashes to calculate: {}'.format(len(input_file) - m))
+		m += 1
+		l = to_hash.lower()
+		for k in dictionary:
+			n += 1
+			j = bytes(k + salt, 'utf-8')
+			hashed = getattr(hashlib, chosen_algorithm)(j).hexdigest()
+			if verbose:
+				print(hashed)
+			if hashed == l:
+				end = time.time()
+				print('\nHash found, the password is: ', k)
+				print('\nTime took to complete: ', (end-start))
+				print('Words tried: ', n)
+				results[hashed] = k
+				salts.append(salt)
+
+	if output_file:
+		make_output_file(results, salts, output_file)
+		return True
+	else:
+		make_output_file(results, salts)
+		return True
+
 
 def general(verbose, input_file, salt, dictionary, hash_to_crack, chosen_algorithm, output_file):
 

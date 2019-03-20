@@ -1,5 +1,6 @@
 import hash_cracker_joshua as main
 import os
+import crack_func
 
 def settings(verbose=False, input_file='', salt='', dictionary='/usr/share/dict/words', hash_to_crack='', chosen_algorithm='', output_file=False):
 
@@ -25,7 +26,24 @@ Possible options:
 		if val == '1' or val == 'algorithm':
 			chosen_algorithm = main.getInput('settings/algorithm').lower()
 		elif val == '2' or val == 'input file':
-			dictionary = main.getInput('settings/dictionary') # To work on
+			while True:
+				input_file_choice = main.getInput('Would you like to use an input file? (y/n)')
+
+				if input_file_choice == 'y' or input_file_choice == 'yes':
+					input_file = main.getInput('Location of hash file')
+
+					try:
+						input_file = open(input_file).read().splitlines()
+						print('Hash file added succesfully')
+						break
+
+					except FileNotFoundError:
+						print('File does not exist\n')
+						break
+				else:
+					print('Invalid option')
+					break
+
 		elif val == '3' or val == 'verbose':
 			if verbose == True:
 				verbose = False

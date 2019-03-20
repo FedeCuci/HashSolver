@@ -65,7 +65,13 @@ help_info = '''
  Settings: change your settings
  Status: Get an overview of your current settings
 	'''
-	
+
+# def printStatement():
+# 	pass
+# commands = {
+# 		'help': printStatement, 
+# 		'crack': crack_func.general,
+# 		'algorithms', 'clear', 'c', 'status', 'infor'}
 def main(verbose=False, input_file='', salt='', dictionary='/usr/share/dict/words', hash_to_crack='', chosen_algorithm='', output_file=False):
 
 	dictionary = open(current_dictionary).read().splitlines()
@@ -73,6 +79,11 @@ def main(verbose=False, input_file='', salt='', dictionary='/usr/share/dict/word
 	while True: 
 		
 		beginning = getInput('')
+		# if beginning in ['help', 'crack','algorithms', 'clear', 'c', 'status', 'info']:
+		# 	commands[beginning]()
+		# else:
+		# 	print('Unknown command')
+
 		if beginning == 'help':
 			print(help_info)
 		elif beginning == 'settings':
@@ -91,7 +102,10 @@ def main(verbose=False, input_file='', salt='', dictionary='/usr/share/dict/word
 			
 		elif beginning == 'crack':
 
-			crack_func.general(verbose, input_file, salt, dictionary, hash_to_crack, chosen_algorithm, output_file)
+			if input_file:
+				crack_func.input_file(chosen_algorithm, dictionary, input_file, output_file, verbose)
+			else:
+				crack_func.general(verbose, input_file, salt, dictionary, hash_to_crack, chosen_algorithm, output_file)
 
 			# # Run crack() based on algorithm
 			# if chosen_algorithm in supported_algorithms:
