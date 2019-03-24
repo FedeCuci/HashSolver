@@ -9,7 +9,7 @@ gives the user several functionalities and flexibility, however remains very sim
 This hash solver works by receiving a given hash and looping over all the hashes of all the words within a given dictionary file. 
 
 There are several other solutions but hash-solver is a good option for the command line. The functionalities that this hash solver includes are:
-	1. Algorithms: md5, sha256, sha512
+	1. Algorithms: md5, sha256, sha512 
 	2. Input/hash file: A custom input file containing all the hashes the user wants to compute
 	3. Verbose
 	4. Dictionary: A default and/or custom dictionary file in which to check the given hash from
