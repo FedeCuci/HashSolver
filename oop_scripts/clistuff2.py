@@ -1,7 +1,7 @@
 import hashlib
 import time
 import os
-import crack
+import clistuff23
 
 class cliStuff:
 
