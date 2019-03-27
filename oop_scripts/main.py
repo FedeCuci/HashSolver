@@ -168,10 +168,10 @@ For a list of commands, type: "help"
 				
 			elif val == 'crack':
 				if self.input_file:
-					current = clistuff23.Crack(self.algorithm, self.dictionary, self.input_file, self.hashc, self.output_file, self.salt, self.verbose)
+					current = crack.Crack(self.algorithm, self.dictionary, self.input_file, self.hashc, self.output_file, self.salt, self.verbose)
 					current.with_input_file()
 				else:
-					current = clistuff23.Crack(self.algorithm, self.dictionary, self.input_file, self.hashc, self.output_file, self.salt, self.verbose)
+					current = crack.Crack(self.algorithm, self.dictionary, self.input_file, self.hashc, self.output_file, self.salt, self.verbose)
 					current.crack()
 
 			elif val == 'algorithms':
