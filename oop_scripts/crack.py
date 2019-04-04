@@ -5,14 +5,14 @@ import os
 
 class Crack:
 
-	supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512']
+	supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512', 'crypt', 'Crypt']
 
 
 	def __init__(self, algorithm, dictionary, input_file, hashc, output_file, salt, verbose):
 		self.algorithm = algorithm
 		self.dictionary = dictionary
 		self.input_file = input_file
-		self.hashc = hashc
+		self.hashc = hashc.strip()
 		self.output_file = output_file
 		self.salt = salt
 		self.verbose = verbose
@@ -31,7 +31,7 @@ class Crack:
 				n += 1
 				j = bytes(i + self.salt, 'utf-8')
 				if self.algorithm.lower() == 'crypt':
-					hashed = crypt(i, self.salt)
+					hashed = crypt.crypt(i, self.salt)
 				else:
 					hashed = getattr(hashlib, self.algorithm)(j).hexdigest()
 				# Verbose could be checked here and improve readability but would likely slow down the program

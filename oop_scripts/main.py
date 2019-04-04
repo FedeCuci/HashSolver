@@ -6,7 +6,7 @@ import crack
 
 class cliStuff:
 
-	supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512']
+	supported_algorithms = ['MD5', 'md5', 'SHA256', 'sha256', 'SHA512', 'sha512', 'Crypt', 'crypt']
 
 	def __init__(self, algorithm='', dictionary='/usr/share/dict/words', input_file='', hashc='', output_file='', salt='', verbose=False):
 		self.algorithm = algorithm
@@ -26,7 +26,7 @@ class cliStuff:
 		return self.choice
 
 	def status(self):
-		print('\nDictionary file: ', self.dictionary)
+		# print('\nDictionary file: ', str(self.dictionary)
 		print('Algorithm: ', self.algorithm)
 		print('Verbose: ', str(self.verbose))
 		print('Output file: ', self.output_file)
@@ -71,7 +71,9 @@ For a list of commands, type: "help"
 			val = self.getInput('')
 
 			if val == '1' or val == 'algorithm':
-					self.algorithm = self.getInput('settings/algorithm').lower()
+				self.algorithm = self.getInput('settings/algorithm').lower()
+				if self.hashc not in supported_algorithms:
+					print('please enter a valid algorithm')
 			elif val == '2' or val == 'input file':
 				while True:
 					input_file_choice = self.getInput('Would you like to use a custom hash file? (y/n)')
@@ -188,8 +190,6 @@ For a list of commands, type: "help"
 		each hash, it checks whether it matches the hash to be cracked.\n''')
 			elif val == 'hash' or val == '7':
 				self.hashc = self.getInput('Hash to crack')
-				if self.hashc not in supported_algorithms:
-					print('please enter a valid algorithm')
 			else:
 				print('Unknown command')
 
