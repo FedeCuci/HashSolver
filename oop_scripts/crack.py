@@ -1,4 +1,5 @@
 import main
+import crypt
 import time
 import os
 
@@ -29,7 +30,10 @@ class Crack:
 			for i in self.dictionary:
 				n += 1
 				j = bytes(i + self.salt, 'utf-8')
-				hashed = getattr(hashlib, self.algorithm)(j).hexdigest()
+				if self.algorithm.lower() == 'crypt':
+					hashed = crypt(i, self.salt)
+				else:
+					hashed = getattr(hashlib, self.algorithm)(j).hexdigest()
 				# Verbose could be checked here and improve readability but would likely slow down the program
 				if self.verbose is True:
 					print(hashed) # This is the only extra line for verbose... How can it be improved?

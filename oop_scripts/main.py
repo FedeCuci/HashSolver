@@ -1,4 +1,5 @@
 import hashlib
+import crypt
 import time
 import os
 import crack
@@ -187,6 +188,8 @@ For a list of commands, type: "help"
 		each hash, it checks whether it matches the hash to be cracked.\n''')
 			elif val == 'hash' or val == '7':
 				self.hashc = self.getInput('Hash to crack')
+				if self.hashc not in supported_algorithms:
+					print('please enter a valid algorithm')
 			else:
 				print('Unknown command')
 
